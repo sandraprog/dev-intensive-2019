@@ -47,7 +47,7 @@ enum class TimeUnits {
     abstract fun plural(value: Int): String
 }
 
-fun Date.format(pattern: String = "HH:mm:ss dd:MM:yy"): String {
+fun Date.format(pattern: String = "HH:mm:ss dd.MM.yy"): String {
     val dateFormat = SimpleDateFormat(pattern, Locale("ru"))
     return dateFormat.format(this)
 }

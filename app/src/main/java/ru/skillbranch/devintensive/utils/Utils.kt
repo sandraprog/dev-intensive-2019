@@ -17,6 +17,8 @@ object Utils {
     }
 
     fun toInitials(firstName: String?, lastName: String?): String? {
-        return ""
+        val firstInitial =  "${if (firstName.isNullOrBlank()) "" else firstName[0]}"
+        val lastInitial = "${if (lastName.isNullOrBlank()) "" else lastName[0]}"
+        return "${if (firstInitial=="" && lastInitial=="") null else firstInitial.capitalize() + lastInitial.capitalize()}"
     }
 }
