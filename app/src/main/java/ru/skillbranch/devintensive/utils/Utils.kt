@@ -17,8 +17,11 @@ object Utils {
     }
 
     fun toInitials(firstName: String?, lastName: String?): String? {
-        val firstInitial =  "${if (firstName.isNullOrBlank()) "" else firstName[0]}"
-        val lastInitial = "${if (lastName.isNullOrBlank()) "" else lastName[0]}"
-        return "${if (firstInitial=="" && lastInitial=="") null else firstInitial.capitalize() + lastInitial.capitalize()}"
+        val initials = "${if (firstName.isNullOrBlank()) "" else firstName[0].toUpperCase()}" +
+                "${if (lastName.isNullOrBlank()) "" else lastName[0].toUpperCase()}"
+        if (initials.isEmpty())
+            return null
+        else
+            return initials
     }
 }
