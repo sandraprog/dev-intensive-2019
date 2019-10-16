@@ -8,7 +8,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 
 
-fun Activity.hideSoftKeyboard() {
+fun Activity.hideKeyboard() {
     if (currentFocus != null) {
         val inputMethodManager = getSystemService(Context
             .INPUT_METHOD_SERVICE) as InputMethodManager
