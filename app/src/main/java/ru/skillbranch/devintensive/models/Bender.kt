@@ -15,9 +15,7 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
 
 
     fun listenAnswer(answer: String): Pair<String, Triple<Int, Int, Int>> {
-        return if (answer.isNullOrEmpty()) {
-            "${question.validationString}\n${question.question}" to status.color
-        } else if (!question.validateInput(answer)) {
+        return if (!answer.isNullOrEmpty() &&  !question.validateInput(answer)) {
             "${question.validationString}\n${question.question}" to status.color
         } else if (question.answers.contains(answer.toLowerCase())) {
             question = question.nextQuestion()
