@@ -1,20 +1,35 @@
-package ru.skillbranch.devintensive.models
+package ru.skillbranch.devintensive.models.data
 
+import ru.skillbranch.devintensive.extensions.humanizeDiff
 import ru.skillbranch.devintensive.utils.Utils
 import java.util.*
 
-data class User(
+data class User (
     val id: String,
     var firstName: String?,
     var lastName: String?,
     var avatar: String?,
     var rating: Int = 0,
     var respect: Int = 0,
-    var lastVisit: Date? = Date(),
+    val lastVisit: Date? = null,
     var isOnline: Boolean = false
-) {
-    var introBit: String
-
+){
+    fun toUserItem(): UserItem {
+        val lastActivity = when{
+            lastVisit == null -> "Еще ни разу не заходил"
+            isOnline -> "online"
+            else -> "Последний раз был ${lastVisit.humanizeDiff()}"
+        }
+        return UserItem(
+            id,
+            "${firstName.orEmpty()} ${lastName.orEmpty()}",
+            Utils.toInitials(firstName, lastName),
+            avatar,
+            lastActivity,
+            false,
+            isOnline
+        )
+    }
     constructor(id: String, firstName: String?, lastName: String?) : this(
         id,
         firstName,
@@ -23,14 +38,6 @@ data class User(
     )
 
     constructor(id: String) : this(id, "John", "Doe")
-
-    init {
-        introBit = getIntro()
-        println(
-            "It's Alive!!! \n" +
-                    "${if (lastName === "Doe") "His name is $firstName $lastName" else "And his name is $firstName $lastName\""}\n"
-        )
-    }
 
     private fun getIntro(): String = """
         tututu  tuuuu..
@@ -53,12 +60,18 @@ data class User(
         """.trimIndent()
     )
 
+
+
     companion object Factory {
         private var lastId: Int = -1
         fun makeUser(fullName: String?): User {
             lastId++
             val (firstName, lastName) = Utils.parseFullName(fullName)
-            return User(id = "$lastId", firstName = firstName, lastName = lastName)
+            return User(
+                id = "$lastId",
+                firstName = firstName,
+                lastName = lastName
+            )
         }
     }
 
@@ -83,7 +96,16 @@ data class User(
         fun lastVisit(lastVisit: Date?) = apply{this.lastVisit = lastVisit}
         fun isOnline(isOnline: Boolean) = apply{this.isOnline = isOnline}
 
-        fun build() = User(id, firstName, lastName, avatar, rating, respect, lastVisit, isOnline)
+        fun build() = User(
+            id,
+            firstName,
+            lastName,
+            avatar,
+            rating,
+            respect,
+            lastVisit,
+            isOnline
+        )
 
 
     }
