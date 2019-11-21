@@ -28,6 +28,7 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //TODO set custom theme this before super and setContentView
+        this.setTheme(R.style.SplashTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
@@ -62,7 +63,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun initViews(savedInstanceState: Bundle?) {
         viewFields = mapOf(
-            "nickname" to tv_nick_name,
+            "nickName" to tv_nick_name,
             "rank" to tv_rank,
             "firstName" to et_first_name,
             "lastName" to et_last_name,
