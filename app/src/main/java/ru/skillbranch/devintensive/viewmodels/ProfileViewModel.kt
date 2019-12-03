@@ -12,12 +12,14 @@ class ProfileViewModel: ViewModel() {
     private val repository: PreferencesRepository = PreferencesRepository
     private val profileData = MutableLiveData<Profile>()
     private val appTheme = MutableLiveData<Int>()
+    private val isValidRepository = MutableLiveData<Boolean>()
 
     init{
         Log.d("M_ProfileViewModel","init view model")
         profileData.value = repository.getProfile()
         appTheme.value = repository.getAppTheme()
     }
+    fun isValidRepository(): LiveData<Boolean> = isValidRepository
 
     override fun onCleared() {
         super.onCleared()
@@ -42,5 +44,18 @@ class ProfileViewModel: ViewModel() {
             appTheme.value = AppCompatDelegate.MODE_NIGHT_YES
         }
         repository.saveAppTheme(appTheme.value!!)
+    }
+
+    fun repositoryValidation(repository: String) {
+        isValidRepository.value = repository.isEmpty() || repository.matches(
+            Regex("^(https://)?(www.)?(github.com/)(?!(${getRegexExceptions()})(?=/|$))(?![\\W])(?!\\w+[-]{2})[a-zA-Z0-9-]+(?<![-])(/)?$"))
+    }
+
+    private fun getRegexExceptions(): String {
+        val exceptions = arrayOf(
+            "enterprise", "features", "topics", "collections", "trending", "events", "join",
+            "pricing", "nonprofit", "customer-stories", "security", "login", "marketplace"
+        )
+        return exceptions.joinToString("|")
     }
 }

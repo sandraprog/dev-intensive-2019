@@ -5,6 +5,8 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -34,7 +36,6 @@ class ProfileActivity : AppCompatActivity() {
 
         initViews(savedInstanceState)
         initViewModel()
-        Log.d("M_ProfileActivity","onCreate")
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -46,6 +47,17 @@ class ProfileActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
         viewModel.getProfileData().observe(this, Observer { updateUI(it) })
         viewModel.getTheme().observe(this, Observer { updateTheme(it) })
+        viewModel.isValidRepository().observe(this, Observer { checkValidation(it) })
+    }
+
+    private fun checkValidation(isValidate : Boolean) {
+        if (isValidate) {
+            wr_repository.error = null
+            wr_repository.isErrorEnabled = false
+        } else {
+            wr_repository.error = getString(R.string.repository_error)
+            et_repository.requestFocus()
+        }
     }
 
     private fun updateTheme(mode: Int) {
@@ -84,6 +96,25 @@ class ProfileActivity : AppCompatActivity() {
         btn_switch_theme.setOnClickListener {
             viewModel.switchTheme()
         }
+
+        et_repository.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(text: CharSequence, p1: Int, p2: Int, p3: Int) {
+                viewModel.repositoryValidation(text.toString())
+            }
+            override fun afterTextChanged(p0: Editable?) {}
+            override fun beforeTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        })
+
+        btn_edit.setOnClickListener {
+            if (!wr_repository.error.isNullOrEmpty()){
+                et_repository.setText("")
+            }
+
+            if (isEditMode) saveProfileInfo()
+            isEditMode = !isEditMode
+            showCurrentMode(isEditMode)
+        }
+
     }
 
     private fun showCurrentMode(isEdit: Boolean) {
